@@ -1,3 +1,5 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+
 html,
 body {
   padding: 0;
@@ -13,4 +15,8 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.ma-4 {
+  margin: 1rem;
 }
