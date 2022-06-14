@@ -1,11 +1,12 @@
 import axios from 'axios'
-import type { NextApiResponse, NextPage } from 'next'
+import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
 import { SyntheticEvent, useState } from 'react'
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import styles from '../styles/Home.module.css'
-import { ErrorResponse, Output, OutputResponse } from './api/files'
+import { Output, OutputResponse } from './api/files'
+
+const SERVER_LIVE = 'http://localhost:5500/';
 
 const Home: NextPage = () => {
   const [filePath, setFilePath] = useState('');
@@ -26,7 +27,6 @@ const Home: NextPage = () => {
         setOutput(res.data.response);
       }
     } catch (error) {
-      console.log("🚀 ~ file: communications.tsx ~ line 37 ~ handleSubmit ~ error", error)
       alert(JSON.stringify(error, null, 2));
     }
     setIsRunning(false);
@@ -92,8 +92,20 @@ const Home: NextPage = () => {
           <label className="label ml-4">Coverage file</label>
           <div className={styles.field}>
             <input className="input is-info" type="text" readOnly value={output?.coveragePath} />
-            <button className='button is-info' onClick={handleOpen}>Open</button>
+            <CopyToClipboard text={output ? output.coveragePath : ''}>
+              <button className='button is-info'>Copy</button>
+            </CopyToClipboard>
+            {/* <button className='button is-info' onClick={handleOpen}>Open</button> */}
           </div>
+
+          {output?.coveragePath &&
+            <div className={styles.field}>
+              <button className='button is-link'>
+                <a href={SERVER_LIVE.concat(output.coveragePath)} target="_blank" rel="noreferrer">Open the coverage file on new tab</a>
+              </button>
+            </div>
+          }
+
         </div>
 
       </main>
