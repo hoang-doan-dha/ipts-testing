@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import styles from '../styles/Home.module.css'
 import { Output, OutputResponse } from './api/files'
@@ -9,9 +9,18 @@ import { Output, OutputResponse } from './api/files'
 const SERVER_LIVE = 'http://localhost:5500/';
 
 const Home: NextPage = () => {
+  const [folderPath, setFolderPath] = useState('');
   const [filePath, setFilePath] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState<Output | null>(null);
+
+  useEffect(() => {
+    const path = localStorage.getItem('folderPath');
+    if (path) {
+      setFolderPath(path);
+    }
+  }, [])
+  
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -21,10 +30,11 @@ const Home: NextPage = () => {
     try {
       setIsRunning(true);
       const res: any = await axios.post('/api/files', {
-        filePath
+        filePath, folderPath
       });
       if (res.data as OutputResponse) {
         setOutput(res.data.response);
+        localStorage.setItem('folderPath', folderPath);
       }
     } catch (error) {
       alert(JSON.stringify(error, null, 2));
@@ -59,6 +69,10 @@ const Home: NextPage = () => {
 
         <div className="card my-4">
           <form onSubmit={handleSubmit}>
+            <div className='ma-4'>
+              <label className="label" htmlFor="folderPath">Folder path</label>
+              <input className="input is-primary" type="text" name='folderPath' value={folderPath} required onChange={(e) => setFolderPath(e.target.value)} />
+            </div>
             <div className='ma-4'>
               <label className="label" htmlFor="filePath">File path</label>
               <input className="input is-primary" type="text" name='filePath' value={filePath} required onChange={(e) => setFilePath(e.target.value)} />
