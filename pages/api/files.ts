@@ -22,7 +22,7 @@ export default function handler(
 ) {
   if (req.method === 'POST') {
     // Process a POST request
-    const response = getFiles(req.body.folderPath, req.body.filePath); 
+    const response = getFiles(req.body.folderPath, req.body.filePath, req.body.fastRun); 
     if (response instanceof Error) {
       res.status(500).json({ error: response.message });
       return;

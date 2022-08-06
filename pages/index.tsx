@@ -11,6 +11,7 @@ const SERVER_LIVE = 'http://localhost:5500/';
 const Home: NextPage = () => {
   const [folderPath, setFolderPath] = useState('');
   const [filePath, setFilePath] = useState('');
+  const [fastRun, setFastRun] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState<Output | null>(null);
 
@@ -30,7 +31,7 @@ const Home: NextPage = () => {
     try {
       setIsRunning(true);
       const res: any = await axios.post('/api/files', {
-        filePath, folderPath
+        filePath, folderPath, fastRun
       });
       if (res.data as OutputResponse) {
         setOutput(res.data.response);
@@ -91,9 +92,13 @@ const Home: NextPage = () => {
 
         <div className='card'>
           <header className="card-header">
-            <p className="card-header-title">
-              OUTPUT
-            </p>
+            <div className="card-header-title">
+              <div className="mr-4">OUTPUT</div>
+              <label className="label" htmlFor="fastRun">
+              <input className="checkbox" type="checkbox" name="fastRun" defaultChecked={fastRun} onChange={() => setFastRun(!fastRun)} />
+                &nbsp; Fast Run
+              </label>
+            </div>
           </header>
           <label className="label ml-4 mt-4">Test file</label>
           <div className={styles.field}>
